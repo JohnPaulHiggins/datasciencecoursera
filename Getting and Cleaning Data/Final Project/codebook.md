@@ -1,9 +1,9 @@
-#Codebook for Tidy Data
+# Codebook for Tidy Data
 
-##Description
+## Description
 This project summarizes and averages the data from UCI's Human Activity Recognition Using Smartphones Data Set, found here: http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones. It presents the data by subject and by activity (e.g. Subject 4 Walking, or Subject 8 Sitting).
 
-##Raw Data
+## Raw Data
 The raw data was taken from http://archive.ics.uci.edu/ml/machine-learning-databases/00240/UCI%20HAR%20Dataset.zip, and downloaded August 15 2017 at 7:49PM EST. The raw data for this project is the processed data from the source data set; elaboration on the collection and processing of this data can be found at UCI's website, and in the README.txt and features\_info.txt files contained in the data set.
 
 A summary of the collection process, taken from the data set's README.txt:
@@ -13,8 +13,8 @@ The sensor signals (accelerometer and gyroscope) were pre-processed by applying 
 
 Further informtion and descriptions of the variables in the raw data can be found in features\_info.txt.
 
-##Processing
-###Source Files
+## Processing
+### Source Files
 From the source data, the following files were used.
 * activity\_labels.txt
 * features.txt
@@ -25,7 +25,7 @@ From the source data, the following files were used.
 * /train/X\_train.txt
 * /train/y\_train.txt
 
-###Creating the Tidy Data
+### Creating the Tidy Data
 The creation of the tidy data file "output.txt," a tab-separated data file, is entirely automated within the script run\_analysis.r. Upon downloading and unzipping "UCI HAR Dataset," one must simply run run\_analysis.r from the directory containing the UCI HAR Dataset folder.
 
 A high-level summary of the tasks performed by run\_analysis.r:
@@ -38,7 +38,7 @@ A high-level summary of the tasks performed by run\_analysis.r:
 
 This process is explained in greater detail here: [link readme]
 
-###Variables
+### Variables
 The tidy data is a data frame of 180 observations and 68 variables.
 
 The 180 observations come from an observation for each activity, for each subject (6 activities * 30 subjects). The 68 variables are as follows:

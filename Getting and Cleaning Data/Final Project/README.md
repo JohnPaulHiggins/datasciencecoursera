@@ -1,4 +1,4 @@
-#README.md
+# README.md
 
 By running run\_analysis.r from the same directory which contains the UCI HAR Dataset folder, a "tidy" tab-separated data file is produced. run\_analysis.r processes the UCI HAR data in the following fashion:
 
