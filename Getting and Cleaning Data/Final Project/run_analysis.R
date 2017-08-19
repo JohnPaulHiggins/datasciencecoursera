@@ -112,4 +112,4 @@ for(i in seq_along(databyactivity)) {
 }
 
 # Write to output file
-write.table(outp, "output.txt", sep = "\t")
+write.table(outp, "output.txt", sep = "\t", row.names=FALSE)
