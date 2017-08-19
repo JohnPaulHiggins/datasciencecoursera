@@ -4,33 +4,33 @@
 This project summarizes and averages the data from UCI's Human Activity Recognition Using Smartphones Data Set, found here: http://archive.ics.uci.edu/ml/datasets/Human+Activity+Recognition+Using+Smartphones. It presents the data by subject and by activity (e.g. Subject 4 Walking, or Subject 8 Sitting).
 
 ##Raw Data
-The raw data was taken from http://archive.ics.uci.edu/ml/machine-learning-databases/00240/UCI%20HAR%20Dataset.zip, and downloaded August 15 2017 at 7:49PM EST. The raw data for this project is the processed data from the source data set; elaboration on the collection and processing of this data can be found at UCI's website, and in the README.txt and features_info.txt files contained in the data set.
+The raw data was taken from http://archive.ics.uci.edu/ml/machine-learning-databases/00240/UCI%20HAR%20Dataset.zip, and downloaded August 15 2017 at 7:49PM EST. The raw data for this project is the processed data from the source data set; elaboration on the collection and processing of this data can be found at UCI's website, and in the README.txt and features\_info.txt files contained in the data set.
 
 A summary of the collection process, taken from the data set's README.txt:
-"The experiments have been carried out with a group of 30 volunteers within an age bracket of 19-48 years. Each person performed six activities (WALKING, WALKING_UPSTAIRS, WALKING_DOWNSTAIRS, SITTING, STANDING, LAYING) wearing a smartphone (Samsung Galaxy S II) on the waist. Using its embedded accelerometer and gyroscope, we captured 3-axial linear acceleration and 3-axial angular velocity at a constant rate of 50Hz. The experiments have been video-recorded to label the data manually. The obtained dataset has been randomly partitioned into two sets, where 70% of the volunteers was selected for generating the training data and 30% the test data. 
+"The experiments have been carried out with a group of 30 volunteers within an age bracket of 19-48 years. Each person performed six activities (WALKING, WALKING\_UPSTAIRS, WALKING\_DOWNSTAIRS, SITTING, STANDING, LAYING) wearing a smartphone (Samsung Galaxy S II) on the waist. Using its embedded accelerometer and gyroscope, we captured 3-axial linear acceleration and 3-axial angular velocity at a constant rate of 50Hz. The experiments have been video-recorded to label the data manually. The obtained dataset has been randomly partitioned into two sets, where 70% of the volunteers was selected for generating the training data and 30% the test data. 
 
 The sensor signals (accelerometer and gyroscope) were pre-processed by applying noise filters and then sampled in fixed-width sliding windows of 2.56 sec and 50% overlap (128 readings/window). The sensor acceleration signal, which has gravitational and body motion components, was separated using a Butterworth low-pass filter into body acceleration and gravity. The gravitational force is assumed to have only low frequency components, therefore a filter with 0.3 Hz cutoff frequency was used. From each window, a vector of features was obtained by calculating variables from the time and frequency domain."
 
-Further informtion and descriptions of the variables in the raw data can be found in features_info.txt.
+Further informtion and descriptions of the variables in the raw data can be found in features\_info.txt.
 
 ##Processing
 ###Source Files
 From the source data, the following files were used.
-*activity_labels.txt
-*features.txt
-*/test/subject_test.txt
-*/test/X_test.txt
-*/test/y_test.txt
-*/train/subject_train.txt
-*/train/X_train.txt
-*/train/y_train.txt
+* activity\_labels.txt
+* features.txt
+* /test/subject\_test.txt
+* /test/X\_test.txt
+* /test/y\_test.txt
+* /train/subject\_train.txt
+* /train/X\_train.txt
+* /train/y\_train.txt
 
 ###Creating the Tidy Data
-The creation of the tidy data file "output.txt," a tab-separated data file, is entirely automated within the script run_analysis.r. Upon downloading and unzipping "UCI HAR Dataset," one must simply run run_analysis.r from the directory containing the UCI HAR Dataset folder.
+The creation of the tidy data file "output.txt," a tab-separated data file, is entirely automated within the script run\_analysis.r. Upon downloading and unzipping "UCI HAR Dataset," one must simply run run\_analysis.r from the directory containing the UCI HAR Dataset folder.
 
-A high-level summary of the tasks performed by run_analysis.r:
+A high-level summary of the tasks performed by run\_analysis.r:
 
-1. The source files are read in; the "test" data frame is assembled from /test/subject_test.txt, /test/X_test.txt, /test/y_test.txt and features.txt. Likewise the "train" data frame is assembled. They are combined into one data frame with rbind.
+1. The source files are read in; the "test" data frame is assembled from /test/subject\_test.txt, /test/X\_test.txt, /test/y\_test.txt and features.txt. Likewise the "train" data frame is assembled. They are combined into one data frame with rbind.
 
 2. From the full data frame, the variables representing "mean()" or "std" information are extracted.
 
@@ -116,6 +116,6 @@ Subject
 Numeric vector taking values 1 to 30, representing the 30 different subjects in the experiment.
 
 Activity
-Factor with six levels; "LAYING," "SITTING," "STANDING," "WALKING," "WALKING_DOWNSTAIRS," "WALKING_UPSTAIRS." Each level is a specific activity.
+Factor with six levels; "LAYING," "SITTING," "STANDING," "WALKING," "WALKING\_DOWNSTAIRS," "WALKING\_UPSTAIRS." Each level is a specific activity.
 
 Each subsequent variable is a numeric vector representing the average values for the corresponding variable from the original data, with each entry corresponding to a specific subject-activity pair.

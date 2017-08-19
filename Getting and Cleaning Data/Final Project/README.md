@@ -1,14 +1,14 @@
 #README.md
 
-By running run_analysis.r from the same directory which contains the UCI HAR Dataset folder, a "tidy" tab-separated data file is produced. run_analysis.r processes the UCI HAR data in the following fashion:
+By running run\_analysis.r from the same directory which contains the UCI HAR Dataset folder, a "tidy" tab-separated data file is produced. run\_analysis.r processes the UCI HAR data in the following fashion:
 
-1. features.txt and activity_labels.txt are read in as character vectors with scan. features.txt will be used for the names of the variables; activity_labels will serve as a lookup table for labeling the activity performed in each observation.
+1. features.txt and activity\_labels.txt are read in as character vectors with scan. features.txt will be used for the names of the variables; activity\_labels will serve as a lookup table for labeling the activity performed in each observation.
 
 2. The test data is read in.
-    */test/subject_test.txt and /test/y_test.txt are read as numeric vectors, with scan. /test/subject_test.txt will serve as the variable representing which subject performed the task in an observation. /test/y_test.txt serves as the variable representing which activity was performed for each observation.
-    */test/X_test.txt is read in as a data frame, with read.table. It represents the measurements collected and calculated for the test portion of the experiment.
+    * /test/subject\_test.txt and /test/y\_test.txt are read as numeric vectors, with scan. /test/subject\_test.txt will serve as the variable representing which subject performed the task in an observation. /test/y\_test.txt serves as the variable representing which activity was performed for each observation.
+    * /test/X\_test.txt is read in as a data frame, with read.table. It represents the measurements collected and calculated for the test portion of the experiment.
 
-3. The test data frame is assembled. Columns in /test/X_test.txt are named according to features.txt. Two columns are appended at the beginning with cbind: column 1 of the assembled data frame is named "Subject" and comprises /test/subject_test.txt. The second column describes the activity performed; it is named "Activity" and it comprises the result of using the numbers found in /test/y_test.txt to perform lookups on activity_labels.txt (i.e. the numerical value in y_test is fed to activity_labels as an index). The result is a data frame of 2,947 observations and 563 variables (the 561 variables of /test/X_test.txt plus the "Subject" and "Activity" variables).
+3. The test data frame is assembled. Columns in /test/X\_test.txt are named according to features.txt. Two columns are appended at the beginning with cbind: column 1 of the assembled data frame is named "Subject" and comprises /test/subject\_test.txt. The second column describes the activity performed; it is named "Activity" and it comprises the result of using the numbers found in /test/y\_test.txt to perform lookups on activity\_labels.txt (i.e. the numerical value in y\_test is fed to activity\_labels as an index). The result is a data frame of 2,947 observations and 563 variables (the 561 variables of /test/X\_test.txt plus the "Subject" and "Activity" variables).
 
 4. The train information is read in, and the train data frame assembled, in an analogous fashion. The result is a data frame of the same 563 variables, this with 7,352 observations.
 
