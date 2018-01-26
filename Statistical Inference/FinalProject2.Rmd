@@ -1,0 +1,166 @@
+---
+title: 'Statistical Inference Course Project Part Two: Data Analysis'
+author: "John Higgins"
+date: "December 3, 2017"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##Overview
+We will explore the effects of vitamin supplementation on guinea pig tooth
+growth. Supplementation is provided either by ascorbic acid (VC) or by orange
+juice (OJ). Three dosage levels were applied: 0.5 mg/day, 1 mg/day, 2 mg/day.
+Subseqeunt tooth length is given in unspecified units.
+
+##Examining The Data
+We load in the data and acquaint ourselves with its basic details.
+
+```{r}
+library(datasets)
+data("ToothGrowth")
+str(ToothGrowth)
+head(ToothGrowth)
+summary(ToothGrowth)
+```
+
+Let us look at aggregate summary data to determine how supplement and dose
+might affect tooth length.
+
+```{r}
+aggregate(len ~ supp + dose, data = ToothGrowth, mean)
+```
+
+The data suggest that tooth growth is dose-dependent, and for lower doses,
+orange juice is superior to ascorbic acid. This effect decreases as dose
+increases. Let us visualize the data to see if it strengthens this hypothesis.
+
+```{r}
+library(ggplot2)
+ggplot(ToothGrowth,
+        aes(x = dose, y = len)) +
+  geom_point(aes(col = supp)) + 
+  geom_smooth(aes(col = supp),
+              method = "lm",
+              se = FALSE) +
+  facet_wrap(~supp, nrow = 1)
+```
+
+Indeed, we see that both regression lines terminate at a similar value for
+dose 2 mg/day, but the line for ascorbic acid is steeper. Let us test these
+hypotheses.
+
+##Hypothesis Testing
+Our tentative hypotheses are these:
+For a given supplement, greater dose implies greater tooth growth.
+Between supplements, OJ produces greater growth than VC at lower doses, but
+this difference vanishes as the dose increases.
+
+To check these hypotheses, we will run T-tests. We will compare a supplement
+to itself at increasing dosage, and we will compare one supplement to the other
+at identical doses. Our null hypothesis is that the means of tooth length will
+be identical across supplement and dosage.
+
+###Dose Dependency
+####OJ, 0.5 mg/day vs. 1 mg/day
+Alternative hypothesis: the mean tooth length for 1 mg/day is greater than that
+for 0.5 mg/day.
+
+```{r}
+oj.halfmg <- with(ToothGrowth, len[supp == "OJ" & dose == 0.5])
+oj.onemg <- with(ToothGrowth, len[supp == "OJ" & dose == 1.0])
+t.test(oj.onemg, oj.halfmg, alternative = "greater")
+```
+
+For a p-value of .05, the null hypothesis is rejected.
+
+####OJ, 1 mg/day vs. 2 mg/day
+Alternative hypothesis: the mean tooth length for 2 mg/day is greater than that
+for 1 mg/day.
+
+```{r}
+oj.twomg <- with(ToothGrowth, len[supp == "OJ" & dose == 2.0])
+t.test(oj.twomg, oj.onemg, alternative = "greater")
+```
+
+For p = .05, the null hypothesis is rejected.
+
+####VC, 0.5 mg/day vs. 1 mg/day
+Alternative hypothesis: the mean tooth length for 1 mg/day is greater than that
+for 0.5 mg/day.
+
+```{r}
+vc.halfmg <- with(ToothGrowth, len[supp == "VC" & dose == 0.5])
+vc.onemg <- with(ToothGrowth, len[supp == "VC" & dose == 1.0])
+t.test(vc.onemg, vc.halfmg, alternative = "greater")
+```
+
+For p = .05, the null hypothesis is rejected.
+
+####VC, 1 mg/day vs. 2 mg/day
+Alternative hypothesis: the mean tooth length for 2 mg/day is greater than that
+for 1 mg/day.
+
+```{r}
+vc.twomg <- with(ToothGrowth, len[supp == "VC" & dose == 2.0])
+t.test(vc.twomg, vc.onemg, alternative = "greater")
+```
+
+For p = .05, the null hypothesis is rejected.
+
+####Conclusion
+Supplement dose correlates strongly with tooth growth. An increase in
+supplementation level, regardless of the supplement, corresponds to greater
+tooth growth, p < .05.
+
+###Supplement Choice
+####OJ vs. VC, 0.5 mg/day
+Alternative hypothesis: OJ elicits greater tooth growth than VC.
+
+```{r}
+t.test(oj.halfmg, vc.halfmg, alternative = "greater")
+```
+
+For p = .05, the null hypothesis is rejected.
+
+####OJ vs. VC, 1 mg/day
+Alternative hypothesis: OJ elicits greater tooth growth than VC.
+
+```{r}
+t.test(oj.onemg, vc.onemg, alternative = "greater")
+```
+
+For p = .05, the null hypothesis is rejected.
+
+####OJ vs. VC, 2 mg/day
+Alternative hypothesis: OJ elicits greater tooth growth than VC.
+
+```{r}
+t.test(oj.twomg, vc.twomg, alternative = "greater")
+```
+
+For p = .05, we fail to reject the null hypothesis.
+
+Let us see if there is any detectable difference in mean between the two
+supplements, with a two-sided T-test.
+
+```{r}
+t.test(oj.twomg, vc.twomg, alternative = "two.sided")
+```
+
+Again, for p = .05 or for any reasonable p-value, we fail to reject the null
+hypothesis.
+
+####Conclusion
+For the two smaller dosages, OJ elicits greater tooth growth than VC (p < .05).
+For a dose of 2 mg/day, there is no difference between supplements.
+
+##Summary
+Tooth growth increases as supplement growth increases. For a dose of 0.5 mg/day
+or 1 mg/day, orange juice results in greater tooth growth than ascorbic acid,
+however at a dose of 2 mg/day the tooth growth between supplements is
+identical.

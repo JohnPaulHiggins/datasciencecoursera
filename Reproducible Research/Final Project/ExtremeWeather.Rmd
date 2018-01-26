@@ -1,0 +1,151 @@
+#Economic and Health Impact of Extreme Weather On U.S., 1950-2011
+##Synopsis
+Each year, natural disasters cause millions of dollars in damage to
+American property, and cause injuries and deaths. Using the data from the
+U.S. National Oceanic and Atmospheric Administration's storm database, we have
+conducted an exploratory analysis to determine the most harmful of these
+events.
+
+We find that tornadoes are the most destructive to human life, causing the
+greatest number of deaths and injuries. Drought causes the most damage to
+American crops, and flooding causes the greatest amout of damage to
+American property.
+
+##Data Processing
+Code is included to download the raw data, if the file is not in the current
+working directory. Then, the file is read directly by read.csv. We will also
+be using the dplyr and ggplot2 packages; these are loaded.
+
+```{r}
+if (!file.exists("repdata%2Fdata%2FStormData.csv.bz2")) {
+  download.file(
+    "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2FStormData.csv.bz2",
+    destfile = "repdata%2Fdata%2FStormData.csv.bz2")
+}
+storm.data <- read.csv("repdata%2Fdata%2FStormData.csv.bz2", stringsAsFactors = FALSE)
+library(dplyr)
+library(ggplot2)
+```
+
+For processing the data, we will use the dplyr package and a helper function
+called "cost.multiplier," which will be used to map the symbolic multipliers
+in the data set (e.g. "K" for one thousand) to the corresponding numbers, so
+that it is possible to calculate the economic damage.
+
+```{r}
+cost.multiplier <- function(x) {
+  if (x == "") {
+    0
+  }
+  else{
+    switch(x,
+           "b" =,
+           "B" = 1000000000,
+           "h" =,
+           "H" = 100,
+           "K" =,
+           "k" = 1000,
+           "m" =,
+           "M" = 1000000,
+           "?" =,
+           "-" = 0,
+           "+" = 1,
+           10) 
+  }
+}
+storm.data$PROPDMGMULT <- sapply(storm.data$PROPDMGEXP, cost.multiplier)
+storm.data$CROPDMGMULT <- sapply(storm.data$CROPDMGEXP, cost.multiplier)
+```
+
+A data frame tbl is created from the data frame, and the columns we will need
+are extracted. We will only requier the data on fatalities, injuries, property
+and crop damage (and the corresponding multipliers). The actual economic damage
+is calculated by multiplying the value in PROPDMG (likewise, CROPDMG) with the
+associated value in PROPDMGMULT (CROPDMGMULT).
+
+```{r}
+storm.data <- tbl_df(storm.data)
+storm.data <- storm.data %>% 
+  select(EVTYPE, FATALITIES, INJURIES, PROPDMG, PROPDMGMULT,
+         CROPDMG, CROPDMGMULT) %>%
+  mutate(PROPCOST = PROPDMG * PROPDMGMULT,
+         CROPCOST = CROPDMG * CROPDMGMULT)
+head(storm.data)
+```
+
+Next, the data are grouped by EVTYPE -- the kind of event. Sums are run to find
+the total number of deaths, of injuries, and the economic cost to property and
+to crops for each category of event.
+
+```{r}
+grouped.data <- group_by(storm.data, EVTYPE)
+property.damage <- grouped.data %>%
+  summarize(EXPENSE = sum(PROPCOST)) %>%
+  arrange(desc(EXPENSE))
+crop.damage <- grouped.data %>%
+  summarize(EXPENSE = sum(CROPCOST)) %>%
+  arrange(desc(EXPENSE))
+fatalities <- grouped.data %>%
+  summarize(DEATHS = sum(FATALITIES)) %>%
+  arrange(desc(DEATHS))
+injuries <- grouped.data %>%
+  summarize(INJURED = sum(INJURIES)) %>%
+  arrange(desc(INJURED))
+```
+
+##Results
+###Fatalities
+
+An examination of the fatality data shows us that tornadoes are by far, the
+most deadly of the tracked storms. Excessive heat are second, with flash
+flood a distant third. The ten most deadly tracked categries are charted,
+for purposes of comparison.
+
+```{r}
+head(fatalities)
+fatality.plot <- ggplot(data = head(fatalities, 10),
+                      aes(x = reorder(EVTYPE, DEATHS), y = DEATHS)) +
+  geom_col() +
+  labs(x="Event Type",
+       y="Fatalities",
+       title="Fatalities from Extreme Weather") +
+  coord_flip()
+print(fatality.plot)
+```
+
+###Injuries
+
+An examination of our injury data again shows tornadoes as the most harmful
+of tracked phenomena, with more than ten times a many injuries as TSTM
+(thunderstorm) wind, which is second.
+
+```{r}
+head(injuries)
+```
+
+###Damage to Property
+
+We find that floods have been most destructive to property -- more than twice
+as damaging as hurricanes and typhoons. Again, the top ten are charted for
+demonstration.
+
+```{r}
+head(property.damage)
+property.plot <- ggplot(data = head(property.damage, 10),
+                  aes(x = reorder(EVTYPE, EXPENSE), y = EXPENSE)) + 
+  geom_col() +
+  labs(x="Event Type",
+       y="Damage (USD)",
+       title="Property Damage from Extreme Weather") +
+  coord_flip()
+print(property.plot)
+```
+
+###Damage to Crops
+
+Though various floods and freezes are individually damaging, the single most
+destructive extreme weather event to crops is found to be drought.
+
+```{r}
+head(crop.damage)
+```
